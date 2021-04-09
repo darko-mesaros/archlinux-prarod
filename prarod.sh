@@ -83,7 +83,15 @@ function aurhelper(){
 function usershell(){
 	chsh -s $(which zsh) $1 > /dev/null 2>&1
 	# Install ohmyzsh
-        sudo -u $dest_user sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+        if [ -d ~/.oh-my-zsh ]; then
+            msgbox "Oh My ZSH" "The package oh-my-zsh is already installed"
+        else
+            #sudo -u $dest_user git clone --depth=1 git://github.com/robbyrussell/oh-my-zsh.git $dest_home/.oh-my-zsh
+            sudo -u $dest_user wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O $dest_home/tmp/install.sh
+            sudo chmod +x $dest_home/tmp/install.sh
+            sudo -u $dest_user sh $dest_home/tmp/install.sh
+            cd
+        fi
 }
 
 function configuremakepkg(){
@@ -108,8 +116,9 @@ function configurest(){
 
 function setuplolbanner(){
 	sudo -u $dest_user mkdir -p $dest_home/.local/share/fonts/figlet-fonts
-	sudo -u $dest_user wget "https://raw.githubusercontent.com/xero/figlet-fonts/master/3d.flf" $dest_home/.local/share/fonts/figlet-fonts/
-}
+	sudo -u $dest_user wget "https://raw.githubusercontent.com/xero/figlet-fonts/master/3d.flf" -O $dest_home/.local/share/fonts/figlet-fonts/3d.flf
+      }
+
 
 # kick off 
 setuphome
